@@ -1,0 +1,173 @@
+// This code assigns values for Motor A
+int AIN1 = 8;
+int PWMA = 5;
+// This code assigns values for Motor B
+int BIN1 = 7;
+int PWMB = 6;
+// This code assigns a value for STBY
+int STBY = 3;
+// This code assigns the values for the settings
+int speedA = 100;
+int speedB = 100;
+int trigPin= 13;
+int echoPin= 12;
+// This float value is for the duration and distance
+float duration, distance;  
+#include <Servo.h>
+Servo myservo;
+void setup(){
+pinMode(AIN1,OUTPUT);
+pinMode(PWMA,OUTPUT);
+pinMode(BIN1,OUTPUT);
+pinMode(PWMB,OUTPUT);
+digitalWrite(STBY,HIGH);
+Serial.begin(9600);
+pinMode(trigPin, OUTPUT);
+pinMode(echoPin, INPUT);
+myservo.attach(10);
+}
+void Forward()
+{
+  // This code is for Motors A
+  digitalWrite(AIN1,HIGH);
+  analogWrite(PWMA, speedA);
+  // This code is for Motors B
+  digitalWrite(BIN1,HIGH);
+  analogWrite(PWMB, speedB);
+}
+void Backward()
+{
+  // This code is for Motors A
+  digitalWrite(AIN1,LOW);
+  analogWrite(PWMA, speedA);
+  // This code is for Motors
+  digitalWrite(BIN1,LOW);
+  analogWrite(PWMB, speedB);
+}
+void Right()
+{
+  // This code is for Motors A
+  digitalWrite(AIN1,HIGH);
+  analogWrite(PWMA, speedA);
+  // This code is for Motors B
+  digitalWrite(BIN1,LOW);
+  analogWrite(PWMB, speedB);
+}
+void Left()
+{
+  // This code is for Motors A
+  digitalWrite(AIN1,LOW);
+  analogWrite(PWMA, speedA);
+  // This code is for Motors B
+  digitalWrite(BIN1,HIGH);
+  analogWrite(PWMB, speedB);
+}
+void LeftForward()
+{
+  // This code is for Motors A
+  digitalWrite(AIN1,HIGH);
+  analogWrite(PWMA, speedA);
+  // This code is for Motors B
+  digitalWrite(BIN1,HIGH);
+  analogWrite(PWMB, speedB/2);
+}
+void LeftBackward()
+{
+  // This code is for Motors A
+  digitalWrite(AIN1,LOW);
+  analogWrite(PWMA, speedA);
+  // This code is for Motors B
+  digitalWrite(BIN1,LOW);
+  analogWrite(PWMB, speedB/2);
+}
+void RightForward()
+{
+  // This code is for Motors A
+  digitalWrite(AIN1,HIGH);
+  analogWrite(PWMA, speedA/2);
+  // This code is for Motors B
+  digitalWrite(BIN1,HIGH);
+  analogWrite(PWMB, speedB);
+}
+void RightBackward()
+{ // This code is for Motors A
+  digitalWrite(AIN1,LOW);
+  analogWrite(PWMA, speedA/2);
+  // This code is for Motors B
+  digitalWrite(BIN1,LOW);
+  analogWrite(PWMB, speedB);
+}
+void Stop()
+{
+  // This code is for Motors A
+  digitalWrite(AIN1,HIGH);
+  analogWrite(PWMA, 0);
+  // This code is for Motors B
+  digitalWrite(BIN1,HIGH);
+  analogWrite(PWMB, 0);
+} 
+void ultrasonic()
+{
+digitalWrite(trigPin, LOW);
+delayMicroseconds(2);
+digitalWrite(trigPin, HIGH);
+delayMicroseconds(10);
+digitalWrite(trigPin, LOW);
+duration = pulseIn(echoPin, HIGH);
+distance = (duration / 58); 
+return(int)distance;
+}
+
+void loop() 
+{
+  distance = (duration/ 2) * 0.0343;
+  // The main code is here to run repeatedly   
+  myservo.write(90); 
+ Forward();
+ ultrasonic();
+ if (distance < 20)
+ {
+  Stop();
+  myservo.write(0);
+  delay(200);
+  ultrasonic();
+  if (distance < 20)
+  {
+    Stop();
+    myservo.write(180);
+    delay(200);
+    ultrasonic();
+    delay(200);
+    Stop();
+    ultrasonic();
+    if (distance > 20)
+    {
+      Left();
+      delay(700);
+      myservo.write(90);
+    }
+    
+    else
+    {
+      Backward();
+      delay(500);
+      Left();
+      delay(1400);
+      myservo.write(90);
+  
+      
+      
+    }
+  }
+  else 
+  {
+     Right();
+     delay(700);
+     myservo.write(90);
+   }
+   
+ } 
+ else {
+  Forward();
+ }
+}
