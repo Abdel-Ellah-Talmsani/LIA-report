@@ -1,0 +1,120 @@
+// this code is for Motor A
+int AIN= 8;
+int PWMA= 5;
+// this code is for Motor B
+#define BIN 7
+int PWMB= 6;
+// STBY
+int STBY= 3;
+// those are the code for the Line Trackers
+int sensorMid= A1;
+int sensorR= A0;
+int sensorL= A2;
+int position = 0;
+// the time
+unsigned long previousTime = 0;
+const long prinTime = 150;
+void setup() 
+{
+  // all the motors
+  pinMode(AIN, OUTPUT);
+  pinMode(PWMA, OUTPUT);
+  pinMode(BIN, OUTPUT);
+  pinMode(PWMB, OUTPUT);
+  digitalWrite(STBY, 1);
+  // those are the LineSensors
+  pinMode(sensorMid, INPUT);
+  pinMode(sensorR, INPUT);
+  pinMode(sensorL, INPUT);
+  // this code's purpose is to test the car
+  Serial.begin(9600);
+}
+void loop() 
+{
+  // this code explains the values assigned to each sensor
+  int Rval = analogRead(sensorR);
+  int Lval = analogRead(sensorL);
+  int midVal = analogRead(sensorMid);
+  // this is the Millies function
+  unsigned long currentTime = millis();
+  // this code explains what the the arduino needs to serial print
+  if(currentTime - previousTime >= prinTime)
+  {
+    previousTime = currentTime;
+    Serial.print("L: ");
+    Serial.print(Lval);
+    Serial.print("\t\t");
+    Serial.print("M: ");
+    Serial.print(midVal);
+    Serial.print("\t\t");
+    Serial.print("R: ");
+    Serial.println(Rval);
+  }
+ // this code explains how to track a line
+  if(midVal >= 500 && Rval >= 500 && Lval >= 500)
+  {
+    while(midVal >= 500 && Rval >= 500 && Lval >= 500)
+      delay(1000);
+    } 
+    }
+  
+  else if(midVal >= 500)
+  {
+    Forward(100);
+  }
+  else if(Rval <= 500 && Lval <= 500)
+  {
+    Stop();
+    delay(1000);
+  }
+  else if(Rval >= 500)
+  {
+    Right(100);
+  }
+  else if(Lval >= 500)
+  {
+    Left(100);
+  }
+  {
+  }
+}
+// the mouvements of the motors 
+void Forward(int speed)
+{
+  // This is the code for Motor A
+  digitalWrite(AIN, HIGH);
+  analogWrite(PWMA, speed);
+  // This is the code for Motor B
+  digitalWrite(BIN, HIGH);
+  analogWrite(PWMB, speed);
+}
+
+void Right(int speed)
+{
+ // This is the code for Motor A
+  digitalWrite(AIN, HIGH);
+  analogWrite(PWMA, speed);
+  // This is the code for Motor B
+  digitalWrite(BIN, LOW);
+  analogWrite(PWMA, speed);
+}
+
+void Left(int speed)
+{
+ // This is the code for Motor A
+  digitalWrite(AIN, LOW);
+  analogWrite(PWMA, speed);
+  // This is the code for Motor B
+  digitalWrite(BIN, HIGH);
+  analogWrite(PWMB, speed);
+}
+
+void Stop()
+{
+  // This is the code for Motor A
+  digitalWrite(AIN, HIGH);
+  analogWrite(PWMA, 0);
+  // This is the code for Motor B
+  digitalWrite(BIN, HIGH);
+  analogWrite(PWMB, 0);
+}
