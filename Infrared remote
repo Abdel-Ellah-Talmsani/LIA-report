@@ -6,7 +6,7 @@
 // Motors B
 #define INB 7
 #define PWMB 6
-// this is the STBY(stand by power system)
+// this is the STBY
 #define STBY 3
 //IR
 #define IReceive 9
