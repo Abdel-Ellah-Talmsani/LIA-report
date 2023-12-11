@@ -1,0 +1,116 @@
+// this is the library IR remote which contains a part of the code necessary to make this program work
+#include <IRremote.hpp>
+// Motors A
+#define INA 8
+#define PWMA 5
+// Motors B
+#define INB 7
+#define PWMB 6
+// this is the STBY(stand by power system)
+#define STBY 3
+//IR
+#define IReceive 9
+// buttons of the remote that dictate which way the robot car goes
+#define UP    70
+#define RIGHT 67
+#define LEFT  68
+#define DOWN  21
+#define OK   64
+int 1= 22
+void setup() 
+{
+ // Motors
+  pinMode(INA, OUTPUT);
+  pinMode(PWMA, OUTPUT);
+  pinMode(INB, OUTPUT);
+  pinMode(PWMB, OUTPUT);
+  digitalWrite(STBY, 1);
+
+  //IRtest
+  Serial.begin(9600);
+  IrReceiver.begin(IReceive, ENABLE_LED_FEEDBACK);
+}
+
+void loop() 
+{
+ // Controls
+ if (IrReceiver.decode()) 
+ {
+    Serial.println(IrReceiver.decodedIRData.command);
+    if(IrReceiver.decodedIRData.command == OK)
+    {
+      Stop();
+    }
+    else if(IrReceiver.decodedIRData.command == UP)
+    {
+      Forward(100);
+    }
+    else if(IrReceiver.decodedIRData.command == RIGHT)
+    {
+      Right(100);
+      delay(450);
+      Stop();
+    }
+    else if(IrReceiver.decodedIRData.command == 1)
+    {
+      1(100);
+      delay(45000000);
+      Stop();
+    }
+    else if(IrReceiver.decodedIRData.command == DOWN)
+    {
+      Backward(100);
+    }
+    IrReceiver.resume();
+ }
+}
+// this code represents how the motors must move depending on which command
+void Forward(int speed)
+{
+ // this is Motors A mouvement
+  digitalWrite(INA, HIGH);
+  analogWrite(PWMA, speed);
+  // and this is motors B mouvement
+  digitalWrite(INB, HIGH);
+  analogWrite(PWMB, speed);
+}
+
+void Right(int speed)
+{
+  // Motors A mouvement
+  digitalWrite(INA, HIGH);
+  analogWrite(PWMA, speed);
+  // Motors B mouvement
+  digitalWrite(INB, LOW);
+  analogWrite(PWMB, speed);
+}
+
+void 1(int speed)
+{
+  // Motors A mouvement
+  digitalWrite(INA, LOW);
+  analogWrite(PWMA, speed);
+  // Motors B mouvement
+  digitalWrite(INB, HIGH);
+  analogWrite(PWMB, speed);
+}
+
+void Backward(int speed)
+{
+  // Motors A mouvement
+  digitalWrite(INA, LOW);
+  analogWrite(PWMA, speed);
+  // Motors B mouvement
+  digitalWrite(INB, LOW);
+  analogWrite(PWMB, speed);
+}
+
+void Stop()
+{
+  // Motors A mouvement
+  digitalWrite(INA, HIGH);
+  analogWrite(PWMA, 0);
+  // Motors B mouvement
+  digitalWrite(INB, HIGH);
+  analogWrite(PWMB, 0);
+}
